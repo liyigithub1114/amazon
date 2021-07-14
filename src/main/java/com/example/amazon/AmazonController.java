@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,18 +19,22 @@ public class AmazonController {
     @Autowired
     private RestTemplate restTemplate;
 
+    /**
+     * https://www.amazon.com/Best-Sellers-Womens-Jumpsuits-Rompers-Overalls/zgbs/fashion/9522930011/ref=zg_bs_nav_3_1040660
+     * https://www.amazon.com/Best-Sellers-Womens-Jumpsuits-Rompers-Overalls/zgbs/fashion/9522930011/ref=zg_bs_pg_2?_encoding=UTF8&pg=2
+     */
     @GetMapping("")
     public String parse(HttpServletRequest request) {
 
         final String queryString = request.getQueryString();
-        String url = queryString.replace("url=", "");
+        String url = queryString.replace(URL_PREFIX, "");
         final HttpHeaders headers = new HttpHeaders();
         headers.set("User-Agent",
                     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91"
                         + ".0.4472.114 Safari/537.36");
 
         //Create a new HttpEntity
-        final HttpEntity<String> entity = new HttpEntity<String>(headers);
+        final HttpEntity<String> entity = new HttpEntity<>(headers);
 
         //Execute the method writing your HttpEntity to the request
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
@@ -51,10 +54,9 @@ public class AmazonController {
 
         int size = Math.max(Math.max(highPrice.size(), star.size()), comment.size());
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String template = "%s: high price: %s, star: %s, comment: %s</br>";
 
-        List<String> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             sb.append(String.format(template, i + 1, highPrice.get(i), star.get(i), comment.get(i)));
         }
@@ -62,6 +64,3 @@ public class AmazonController {
     }
 
 }
-/**
- * https://www.amazon.com/Best-Sellers-Womens-Jumpsuits-Rompers-Overalls/zgbs/fashion/9522930011/ref=zg_bs_nav_3_1040660
- */
