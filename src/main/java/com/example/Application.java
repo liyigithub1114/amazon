@@ -20,7 +20,8 @@ public class Application {
     public RestTemplate restTemplate() {
         // 添加拦截器，使用 gzip 编码提交
         ClientHttpRequestInterceptor interceptor = (httpRequest, bytes, execution) -> {
-            httpRequest.getHeaders().set("user-agent",   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36");
+            //httpRequest.getHeaders().set("user-agent",   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3)
+            // AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36");
             httpRequest.getHeaders().set(HttpHeaders.ACCEPT, MediaType.TEXT_HTML_VALUE);
             httpRequest.getHeaders().set(HttpHeaders.ACCEPT_ENCODING, "gzip");   // 使用 gzip 编码提交
             return execution.execute(httpRequest, bytes);
@@ -30,7 +31,7 @@ public class Application {
             clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
         RestTemplate restTemplate = new RestTemplate(clientHttpRequestFactory);
         restTemplate.getInterceptors().add(interceptor);
-        restTemplate.getMessageConverters().add(1,new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        restTemplate.getMessageConverters().add(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
         return restTemplate;
     }
 

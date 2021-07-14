@@ -21,7 +21,7 @@ public class AmazonController {
     private RestTemplate restTemplate;
 
     @GetMapping("")
-    public List<String> parse(HttpServletRequest request) {
+    public String parse(HttpServletRequest request) {
 
         final String queryString = request.getQueryString();
         String url = queryString.replace("url=", "");
@@ -44,20 +44,21 @@ public class AmazonController {
 
     }
 
-    private List<String> parse(String content) {
+    private String parse(String content) {
         final List<String> highPrice = AmazonPatternUtils.findHighPrice(content);
         final List<String> star = AmazonPatternUtils.findStar(content);
         final List<String> comment = AmazonPatternUtils.findComment(content);
 
         int size = Math.max(Math.max(highPrice.size(), star.size()), comment.size());
 
-        String template = "high price: %s, star: %s, comment: %s</br>";
+        StringBuffer sb = new StringBuffer();
+        String template = "%s: high price: %s, star: %s, comment: %s</br>";
 
         List<String> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            result.add(String.format(template, highPrice.get(i), star.get(i), comment.get(i)));
+            sb.append(String.format(template, i + 1, highPrice.get(i), star.get(i), comment.get(i)));
         }
-        return result;
+        return sb.toString();
     }
 
 }
